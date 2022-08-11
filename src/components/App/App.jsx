@@ -1,9 +1,14 @@
 import React, { Component } from 'react';
-import { Modal } from './Modal/Modal';
+import { Modal } from 'components/Modal/Modal';
+import { Searchbar } from 'components/Searchbar/Searchbar';
+import { ImageGallery } from 'components/ImageGallery/ImageGallery';
+import { Button } from 'components/Button/Button';
+
+import css from './App.module.css';
 
 export class App extends Component {
   state = {
-    showModal: true,
+    showModal: false,
   };
 
   toggleModal = () => {
@@ -15,7 +20,10 @@ export class App extends Component {
   render() {
     const { showModal } = this.state;
     return (
-      <div>
+      <div className={css.App}>
+        <Searchbar />
+        <ImageGallery />
+        <Button />
         {showModal && (
           <Modal onClose={this.toggleModal}>
             <p>Modal</p>

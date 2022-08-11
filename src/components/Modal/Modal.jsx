@@ -20,11 +20,16 @@ export class Modal extends Component {
       this.props.onClose();
     }
   };
+  handleBackdropClick = e => {
+    if (e.currentTarget === e.target) {
+      this.props.onClose();
+    }
+  };
 
   render() {
-    const { onClose, children } = this.props;
+    const { children } = this.props;
     return createPortal(
-      <div className={css.Overlay} onClick={onClose}>
+      <div className={css.Overlay} onClick={this.handleBackdropClick}>
         <div className={css.Modal}>{children}</div>
       </div>,
       modalRoot
