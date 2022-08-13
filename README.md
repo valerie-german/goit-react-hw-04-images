@@ -147,3 +147,75 @@ document.querySelector('#modal-root'); render() { return createPortal(
 
 11. ПАТТЕРН РАБОТЫ С КОЛЛЕКЦИЕЙ. Трекаем активный элемент, сетим его индекс (его
     разметку будем рендерить).
+
+12. ОПТИМИЗАЦИЯ. Если компонент был зарендерен по условию, и этого достаточно
+    (заново перерендеривать одно и то же не имеет смысла), тогда необходимо
+    восползоваться методом
+
+    shouldComponentUpdate(nextProps, nextState) {}
+
+    который вызывается перед ре-рендером уже смонтированного компонента и
+    проверяет необходимость дальнейшего ре-рендера компонента
+
+    Проверка:
+
+    return nextState.activeIndex !== this.state.activeIndex
+
+если true - перерендерит, false - рендера не будет. !!!Этод способ используем
+крайне редко
+
+АЛЬТЕРНАТИВА: наследовать класс не от Component, а от PureComponent, где под
+капотом уже есть shouldComponentUpdate. Там происходит проверка каждого свойства
+стейта строгим сравнением.
+
+---
+
+Компоненты: форма, апп и галлерея. В форме мы создаем локальный стейт, где
+храним данные инпута (контролируемый элемент). По сабмиту формы, мы передаем в
+апп пропсом те данные, которые необхожимо будет использовать для рендера. Из
+аппа эти данные пропсом передаются в галлерею, где и будут рендериться.
+
+---
+
+Прокидываем данные из формы в апп в App.jsx при сабмите
+
+handleFormSubmit = inputValue => { console.log(inputValue); };
+
+<Searchbar onSubmitProp={this.handleFormSubmit} />
+
+В Searchbar.jsx
+
+submitHandle = event => { event.preventDefault();
+this.props.onSubmitProp(this.state.input); };
+
+---
+
+Не забыть очистить форму после сабмита:
+
+reset = () => { this.setState({ input: '', }); };
+
+---
+
+trim() - обрезать у строки пробелы с обеих сторон
+
+---
+
+нотификации через Тостифай npm i react-toastify
+
+---
+
+ОБРАБОТКА ОШИБОК
+
+1. Храним в стейте, ловим через catch. Ошибка 404.
+
+state = { imagesArray: null, loading: false, error: null, };
+
+.then(response => { if (response.ok) { return response.json(); } return
+Promise.reject(new Error(this.props.errorMessage())); })
+
+        errorMessage() - приходит из пропса (Тоастер-нотификация)
+
+.catch(error => { this.setState({ error: error }); // this.props.errorMessage();
+})
+
+2.

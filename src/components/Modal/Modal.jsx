@@ -27,10 +27,13 @@ export class Modal extends Component {
   };
 
   render() {
-    const { children } = this.props;
+    // const { children } = this.props;
     return createPortal(
       <div className={css.Overlay} onClick={this.handleBackdropClick}>
-        <div className={css.Modal}>{children}</div>
+        <div className={css.Modal}>
+          {/* {children} */}
+          <img src="" alt="" />
+        </div>
       </div>,
       modalRoot
     );
@@ -41,3 +44,9 @@ Modal.propTypes = {
   children: PropTypes.element,
   onClose: PropTypes.func,
 };
+
+<div class="overlay">
+  <div class="modal">
+    <img src="" alt="" />
+  </div>
+</div>;
