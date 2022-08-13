@@ -1,5 +1,6 @@
-import { ImageGalleryItem } from 'components/ImageGalleryItem/ImageGalleryItem';
 import React, { Component } from 'react';
+import { ImageGalleryItem } from 'components/ImageGalleryItem/ImageGalleryItem';
+import { Loader } from 'components/Loader/Loader';
 
 import css from './ImageGallery.module.css';
 
@@ -8,46 +9,54 @@ const KEY = '28152174-c362e84e874961aded494c5b6';
 export class ImageGallery extends Component {
   state = {
     imagesArray: null,
-    loading: false,
     error: null,
+    status: 'idle',
   };
 
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.inputValue !== this.props.inputValue) {
-      console.log('изменился запрос');
+      this.setState({ status: 'pending' });
 
-      this.setState({ loading: true });
-      fetch(
-        `https://pixabay.com/api/?q=${this.props.inputValue}&page=1&key=${KEY}&image_type=photo&orientation=horizontal&per_page=12`
-      )
-        .then(response => {
-          if (response.ok) {
-            return response.json();
-          }
-          return Promise.reject(new Error(this.props.errorMessage()));
-        })
+      setTimeout(() => {
+        fetch(
+          `https://pixabay.com/api/?q=${this.props.inputValue}&page=1&key=${KEY}&image_type=photo&orientation=horizontal&per_page=12`
+        )
+          .then(response => {
+            if (response.ok) {
+              return response.json();
+            }
+            return Promise.reject(new Error(this.props.errorMessage()));
+          })
 
-        .then(obj => {
-          if (obj.total === 0) {
-            this.props.errorMessage();
-          }
-          this.setState({ imagesArray: obj.hits });
-        })
-        .catch(error => {
-          this.setState({ error: error });
-          // this.props.errorMessage();
-        })
-        .finally(() => this.setState({ loading: false }));
+          .then(obj => {
+            if (obj.total === 0) {
+              this.props.errorMessage();
+            }
+            this.setState({ imagesArray: obj.hits, status: 'resolved' });
+          })
+          .catch(error => {
+            this.setState({ error: error, status: 'rejected' });
+          });
+      }, 2000);
     }
   }
 
   render() {
-    const { imagesArray, loading } = this.state;
+    const { imagesArray, status } = this.state;
 
-    if (imagesArray !== null) {
+    // if (status === 'idle') {
+    //   return;
+    // }
+    if (status === 'pending') {
+      return <Loader />;
+      // <div>Loading...</div>;
+    }
+    if (status === 'rejected') {
+      return this.props.errorMessage();
+    }
+    if (status === 'resolved') {
       return (
         <div>
-          {loading && <div>Loading...</div>}
           <ul className={css.ImageGallery}>
             {imagesArray.map(({ id, webformatURL, largeImageURL, tags }) => {
               return (

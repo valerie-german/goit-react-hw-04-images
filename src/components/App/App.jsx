@@ -63,8 +63,8 @@ export class App extends Component {
           inputValue={this.state.input}
           errorMessage={errorMessage}
         />
-        {this.state.loading && <h1>Loading</h1>}
-        {this.state.imagesArray && <div>Здесь будет картинка</div>}
+        {/* {this.state.loading && <h1>Loading</h1>}
+        {this.state.imagesArray && <div>Здесь будет картинка</div>} */}
         <Button />
         <ToastContainer
           position="top-right"
