@@ -8,36 +8,14 @@ import { Button } from 'components/Button/Button';
 import css from './App.module.css';
 import 'react-toastify/dist/ReactToastify.css';
 
-//const KEY = '28152174-c362e84e874961aded494c5b6';
-
 export class App extends Component {
   state = {
     showModal: false,
     input: '',
     imagesArray: null,
-    loading: false,
     page: 1,
-    activeIndex: null,
+    activeObj: null,
   };
-
-  //componentDidMount() {
-  // this.setState({
-  //   loading: true,
-  //  });
-
-  // fetch(
-  //    `https://pixabay.com/api/?q=cat&page=1&key=${this.state.KEY}&image_type=photo&orientation=horizontal&per_page=12`
-  //   )
-  //     .then(response => response.json())
-  //    .then(images => {
-  //     this.setState({ imagesArray: images });
-  //    })
-  //    .finally(() => {
-  //     this.setState({ loading: false });
-  //   });
-  //}
-
-  componentDidUpdate() {}
 
   toggleModal = () => {
     this.setState(({ showModal }) => ({
@@ -48,11 +26,33 @@ export class App extends Component {
   handleFormSubmit = inputValue => {
     this.setState({
       input: inputValue,
+      page: 1,
     });
   };
 
+  handleImagesArray = array => {
+    if (array.length > 0) {
+      this.setState({ imagesArray: array });
+    } else {
+      this.setState({ imagesArray: null });
+    }
+  };
+
+  handleActiveObj = obj => {
+    this.setState({ activeObj: obj });
+    this.toggleModal();
+  };
+
+  handleButton = page => {
+    this.setState({
+      page: page,
+    });
+  };
+
+  executeScroll = () => document.querySelector(`#toScroll`).scrollIntoView();
+
   render() {
-    const { showModal } = this.state;
+    const { showModal, input, imagesArray, activeObj, page } = this.state;
     const notify = () => toast.info('What are you searching for?');
     const errorMessage = () => toast.error('Oops... we didn`t find anything');
 
@@ -60,12 +60,13 @@ export class App extends Component {
       <div className={css.App}>
         <Searchbar onSubmitProp={this.handleFormSubmit} notify={notify} />
         <ImageGallery
-          inputValue={this.state.input}
+          inputValue={input}
+          page={page}
+          onHandleImagesArray={this.handleImagesArray}
+          onHandleActiveObj={this.handleActiveObj}
           errorMessage={errorMessage}
         />
-        {/* {this.state.loading && <h1>Loading</h1>}
-        {this.state.imagesArray && <div>Здесь будет картинка</div>} */}
-        <Button />
+        {imagesArray && <Button onHandleButton={this.handleButton} />}
         <ToastContainer
           position="top-right"
           autoClose={3000}
@@ -77,7 +78,9 @@ export class App extends Component {
           draggable
           pauseOnHover
         />
-        {showModal && <Modal onClose={this.toggleModal}></Modal>}
+        {showModal && (
+          <Modal onClose={this.toggleModal} activeObj={activeObj}></Modal>
+        )}
       </div>
     );
   }
