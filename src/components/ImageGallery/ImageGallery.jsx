@@ -2,10 +2,11 @@ import React, { Component } from 'react';
 import { ImageGalleryItem } from 'components/ImageGalleryItem/ImageGalleryItem';
 import { Loader } from 'components/Loader/Loader';
 import PropTypes from 'prop-types';
+import { ImageService } from '../../imageServices';
 
 import css from './ImageGallery.module.css';
 
-const KEY = '28152174-c362e84e874961aded494c5b6';
+const imageService = new ImageService();
 
 export class ImageGallery extends Component {
   state = {
@@ -13,7 +14,6 @@ export class ImageGallery extends Component {
     error: null,
     status: 'idle',
     activeObj: null,
-    page: 1,
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -28,43 +28,24 @@ export class ImageGallery extends Component {
       prevProps.page !== this.props.page
     ) {
       this.setState({ status: 'pending' });
-      this.setPages();
 
-      setTimeout(() => {
-        fetch(
-          `https://pixabay.com/api/?q=${this.props.inputValue}&page=${this.state.page}&key=${KEY}&image_type=photo&orientation=horizontal&per_page=12`
-        )
-          .then(response => {
-            if (response.ok) {
-              return response.json();
-            }
-            return Promise.reject(new Error(this.props.errorMessage()));
-          })
-
-          .then(obj => {
-            if (obj.total === 0) {
-              this.props.errorMessage();
-            }
-            this.setState(prevState => {
-              return {
-                imagesArray: [...prevState.imagesArray, ...obj.hits],
-                status: 'resolved',
-              };
-            });
-            this.props.onHandleImagesArray(obj.hits);
-          })
-          .catch(error => {
-            this.setState({ error: error, status: 'rejected' });
+      imageService.getImages(this.props.inputValue,this.props.page).then(obj => {
+          if (obj.total === 0) {
+            this.props.errorMessage();
+          }
+          this.setState(prevState => {
+            return {
+              imagesArray: [...prevState.imagesArray, ...obj.hits],
+              status: 'resolved',
+            };
           });
-      }, 1000);
+          this.props.onHandleImagesArray(obj.hits);
+        })
+        .catch(error => {
+          this.setState({ error: error, status: 'rejected' });
+        });
     }
   }
-
-  setPages = () => {
-    this.setState({
-      page: this.props.page,
-    });
-  };
 
   getActiveObj = id => {
     const activeObj = this.state.imagesArray.find(image => image.id === id);
@@ -85,7 +66,7 @@ export class ImageGallery extends Component {
       return (
         <div>
           <ul className={css.ImageGallery}>
-            {imagesArray.map(({ id, webformatURL, largeImageURL, tags }) => {
+            {imagesArray.map(({ id, webformatURL, tags }) => {
               return (
                 <ImageGalleryItem
                   key={id}
