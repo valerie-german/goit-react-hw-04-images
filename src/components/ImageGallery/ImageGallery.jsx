@@ -38,7 +38,7 @@ export function ImageGallery ({inputValue, page, errorMessage, onHandleImagesArr
         .catch(error => {
           setStatus('rejected');
         });
-
+// eslint-disable-next-line 
   },[inputValue, page]);
 
   
