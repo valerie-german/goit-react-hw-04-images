@@ -20,15 +20,9 @@ const submitHandle = event => {
     }
     
     onSubmitProp(input);
-    // reset();
     setInput('');
   };
 
-  // const reset = () => {
-  //   setInput('');
-  // };
-
-  
     return (
       <header className={css.Searchbar}>
         <form onSubmit={submitHandle} className={css.SearchForm}>

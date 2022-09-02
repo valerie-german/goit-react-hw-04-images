@@ -6,13 +6,11 @@ import { ImageService } from '../../imageServices';
 
 import css from './ImageGallery.module.css';
 
-//const imageService = new ImageService();
 
 export function ImageGallery ({inputValue, page, errorMessage, onHandleImagesArray, onHandleActiveObj}) {
 
   const [imagesArray, setImagesArray] = useState([]);
-  const [status, setStatus] = useState('idle');
-  //const [activeObj, setActiveObj] = useState(null);
+  const [status, setStatus] = useState('idle');  
   const [input, setInput] = useState('');
 
   useEffect(()=>{
@@ -43,39 +41,7 @@ export function ImageGallery ({inputValue, page, errorMessage, onHandleImagesArr
 
   },[inputValue, page]);
 
-  // componentDidUpdate(prevProps, prevState) {
-  //   if (prevProps.inputValue !== this.props.inputValue) {
-  //     this.setState({
-  //       imagesArray: [],
-  //     });
-  //   }
-
-  //   if (
-  //     prevProps.inputValue !== this.props.inputValue ||
-  //     prevProps.page !== this.props.page
-  //   ) {
-  //     this.setState({ status: 'pending' });
-
-  //     ImageService(this.props.inputValue,this.props.page).then(obj => {
-  //         if (obj.total === 0) {
-  //           this.props.errorMessage();
-  //           this.setState({ status: 'rejected' });
-            
-  //         }
-  //         this.setState(prevState => {
-  //           return {
-  //             imagesArray: [...prevState.imagesArray, ...obj.hits],
-  //             status: 'resolved',
-  //           };
-  //         });
-  //         this.props.onHandleImagesArray(obj.hits);
-  //       })
-  //       .catch(error => {
-  //         this.setState({ error: error, status: 'rejected' });
-  //       });
-  //   }
-  // }
-
+  
   const getActiveObj = id => {
     const activeObj = imagesArray.find(image => image.id === id);
     onHandleActiveObj(activeObj);

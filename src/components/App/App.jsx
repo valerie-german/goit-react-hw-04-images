@@ -9,13 +9,6 @@ import css from './App.module.css';
 import 'react-toastify/dist/ReactToastify.css';
 
 export function App () {
-//  state = {
-//    showModal: false,
-//    input: '',
-//    imagesArray: null,
-//    page: 1,
-//    activeObj: null,
-//  };
 
 const [showModal, setShowModal] = useState(false);
 const [input, setInput] = useState('');
@@ -50,11 +43,6 @@ const handleButton = page => {
   const notify = () => toast.info('What are you searching for?');
   const errorMessage = () => toast.error('Oops... we didn`t find anything');
 
-//  executeScroll = () => document.querySelector(`#toScroll`).scrollIntoView();
-
-  
-    // const { showModal, input, imagesArray, activeObj, page } = this.state;
-   
 
     return (
       <div className={css.App}>
