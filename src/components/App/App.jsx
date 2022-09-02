@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import  { useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import { Modal } from 'components/Modal/Modal';
 import { Searchbar } from 'components/Searchbar/Searchbar';
@@ -8,65 +8,65 @@ import { Button } from 'components/Button/Button';
 import css from './App.module.css';
 import 'react-toastify/dist/ReactToastify.css';
 
-export class App extends Component {
-  state = {
-    showModal: false,
-    input: '',
-    imagesArray: null,
-    page: 1,
-    activeObj: null,
+export function App () {
+//  state = {
+//    showModal: false,
+//    input: '',
+//    imagesArray: null,
+//    page: 1,
+//    activeObj: null,
+//  };
+
+const [showModal, setShowModal] = useState(false);
+const [input, setInput] = useState('');
+const [imagesArray, setImagesArray] = useState(null);
+const [page, setPage] = useState(1);
+const [activeObj, setActiveObj] = useState(null);
+
+const toggleModal = () => {
+  setShowModal((prevState) => (
+      !prevState ));
   };
 
-  toggleModal = () => {
-    this.setState(({ showModal }) => ({
-      showModal: !showModal,
-    }));
+const handleFormSubmit = inputValue => {
+  setInput(inputValue);
+  setPage(1);
   };
 
-  handleFormSubmit = inputValue => {
-    this.setState({
-      input: inputValue,
-      page: 1,
-    });
-  };
-
-  handleImagesArray = array => {
-    if (array.length > 0) {
-      this.setState({ imagesArray: array });
-    } else {
-      this.setState({ imagesArray: null });
+const handleImagesArray = array => {
+    array.length > 0 ? setImagesArray(array): setImagesArray(null)
     }
+  
+
+const  handleActiveObj = obj => {
+  setActiveObj(obj );
+  toggleModal();
   };
 
-  handleActiveObj = obj => {
-    this.setState({ activeObj: obj });
-    this.toggleModal();
+const handleButton = page => {
+   setPage(page);
   };
 
-  handleButton = page => {
-    this.setState({
-      page: page,
-    });
-  };
+  const notify = () => toast.info('What are you searching for?');
+  const errorMessage = () => toast.error('Oops... we didn`t find anything');
 
-  executeScroll = () => document.querySelector(`#toScroll`).scrollIntoView();
+//  executeScroll = () => document.querySelector(`#toScroll`).scrollIntoView();
 
-  render() {
-    const { showModal, input, imagesArray, activeObj, page } = this.state;
-    const notify = () => toast.info('What are you searching for?');
-    const errorMessage = () => toast.error('Oops... we didn`t find anything');
+  
+    // const { showModal, input, imagesArray, activeObj, page } = this.state;
+   
 
     return (
       <div className={css.App}>
-        <Searchbar onSubmitProp={this.handleFormSubmit} notify={notify} />
+        <Searchbar onSubmitProp={handleFormSubmit} notify={notify} />
         <ImageGallery
           inputValue={input}
           page={page}
-          onHandleImagesArray={this.handleImagesArray}
-          onHandleActiveObj={this.handleActiveObj}
+          onHandleImagesArray={handleImagesArray}
+          onHandleActiveObj={handleActiveObj}
           errorMessage={errorMessage}
         />
-        {imagesArray && <Button onHandleButton={this.handleButton} />}
+        {imagesArray && <Button onHandleButton={handleButton} />}
         <ToastContainer
           position="top-right"
           autoClose={3000}
@@ -79,9 +79,9 @@ export class App extends Component {
           pauseOnHover
         />
         {showModal && (
-          <Modal onClose={this.toggleModal} activeObj={activeObj}></Modal>
+          <Modal onClose={toggleModal} activeObj={activeObj}></Modal>
         )}
       </div>
     );
-  }
-}
+  };
+
